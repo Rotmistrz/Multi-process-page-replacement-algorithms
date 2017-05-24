@@ -22,7 +22,7 @@ public class MemoryManager {
 			
 			assignedMemory = necessaryMemory * 100 / memorySize;
 			
-			//System.out.println("Potrzebna pamiêæ: " + necessaryMemory + ", zaalokowana pamiêæ: " + assignedMemory);
+			System.out.println("Potrzebna pamiêæ: " + necessaryMemory + ", zaalokowana pamiêæ: " + assignedMemory);
 			
 			processes.add(new Process(necessaryMemory, assignedMemory));
 		}

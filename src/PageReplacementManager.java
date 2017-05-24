@@ -9,6 +9,8 @@ import java.util.Scanner;
 public class PageReplacementManager {
 	private LinkedList<Request> requests;
 	private int missErrors;
+	private Process min;
+	private Process max;
 	
 	public PageReplacementManager() {
 		requests = new LinkedList<Request>();
@@ -36,6 +38,78 @@ public class PageReplacementManager {
 		}
 		
 		return missErrors;
+	}
+	
+	public int runWithPriority(ArrayList<Process> processes) {
+		clear();
+		
+		int size = requests.size();
+		ListIterator<Request> it = requests.listIterator();
+		Request current;
+		Process process;
+		
+		int i = 0;
+		int j = 50;
+		
+		while(it.hasNext()) {
+			current = it.next();
+			
+			process = processes.get(current.processId);
+			
+			System.out.println(i + 1 + " " + current.processId + " " + current.pageId);
+			
+			if(!(process.receivePage(current.pageId))) {
+				missErrors++;
+				process.increaseMissErrors();
+			}
+			
+			if(++i >= j) {
+				checkExtremes(processes);
+				j += 50;
+			}
+		}
+		
+		return missErrors;
+	}
+	
+	public PageReplacementManager checkExtremes(ArrayList<Process> processes) {
+		countExtremeProcesses(processes);
+		
+		min.decrease();
+		max.increase();
+		
+		ListIterator<Process> it = processes.listIterator();
+		Process current;
+		
+		while(it.hasNext()) {
+			current = it.next();
+			current.clear();
+		}
+		
+		return this;
+	}
+	
+	public PageReplacementManager countExtremeProcesses(ArrayList<Process> processes) {
+		Process tmpMin = processes.get(0);
+		Process tmpMax = processes.get(0); 
+		
+		ListIterator<Process> it = processes.listIterator();
+		Process current;
+		
+		while(it.hasNext()) {
+			current = it.next();
+			
+			if(current.getMissErrors() >= tmpMax.getMissErrors() && current.size() > 1) {
+				tmpMax = current;
+			} else if (current.getMissErrors() <= tmpMin.getMissErrors() && current.size() > 1) {
+				tmpMin = current;
+			}
+		}
+		
+		this.min = tmpMin;
+		this.max = tmpMax;
+		
+		return this;
 	}
 	
 	public PageReplacementManager clear() {

@@ -12,7 +12,7 @@ public abstract class PageReplacementAlgorithm {
 	protected abstract MemoryPage throwOutPage();
 	
 	public int run(LinkedList<Integer> requests) {
-		missErrors = 0;
+		clear();
 		
 		ListIterator<Integer> it = requests.listIterator();
 		
@@ -73,7 +73,41 @@ public abstract class PageReplacementAlgorithm {
 	}
 	
 	public boolean isInPhysicalMemory(int id) {
-		return (physicalMemory.getById(id) instanceof NoMemoryPage) ? false : true;
+		return (physicalMemory.isInMemory(id)) ? true : false;
+	}
+	
+	public PageReplacementAlgorithm clear() {
+		missErrors = 0;
+		
+		return this;
+	}
+	
+	public int increaseMissErrors() {
+		return ++missErrors;
+	}
+	
+	public PageReplacementAlgorithm increase() {
+		MemoryPage page = virtualMemory.decrease();
+		
+		if(page instanceof NoMemoryPage) {
+			return this;
+		}
+		
+		physicalMemory.increase(page);
+		
+		return this;
+	}
+	
+	public PageReplacementAlgorithm decrease() {
+		MemoryPage page = physicalMemory.decrease();
+		
+		if(page instanceof NoMemoryPage) {
+			return this;
+		}
+		
+		virtualMemory.increase(page);
+		
+		return this;
 	}
 	
 	public static Memory copyMemory(Memory memory) {

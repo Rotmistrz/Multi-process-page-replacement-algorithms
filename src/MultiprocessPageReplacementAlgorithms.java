@@ -18,6 +18,10 @@ public class MultiprocessPageReplacementAlgorithms {
 		result = prm.run(processesEqual);
 		
 		System.out.println("Przydzia³ równy: " + result);
+		
+		result = prm.runWithPriority(processesProportional);
+		
+		System.out.println("Przydzia³ priorytetowy: " + result);
 	}
 
 }

@@ -12,7 +12,7 @@ public class Memory {
     }
    
     public boolean add(MemoryPage page) {
-        if(memory.size() < size) {
+    	if(memory.size() < size) {
             memory.addLast(page);
             return true;
         } else {
@@ -38,17 +38,45 @@ public class Memory {
        
         MemoryPage current;
         MemoryPage found = new NoMemoryPage();
-       
+        
         while(it.hasNext()) {
             current = it.next();
-           
-            if(current.id == id) {
+            
+        	if(current.id == id) {
                 found = current;
                 break;
             }
         }
        
         return found;
+    }
+    
+    public Memory increase(MemoryPage page) {
+    	size++;
+    	
+    	memory.add(page);
+    	
+    	return this;
+    }
+    
+    public MemoryPage decrease() {
+    	if(memory.size() <= 1) {
+    		return new NoMemoryPage();
+    	}
+    	
+    	MemoryPage page = new NoMemoryPage();
+    	
+    	try {
+    		page = memory.getLast();
+    		memory.remove(page);
+    		
+    	} catch(Exception e) {
+    		System.out.println("size: " + size + "; memorySize: " + memory.size());
+    	}
+    	
+    	size--;
+    	
+    	return page;
     }
    
     public int size() {

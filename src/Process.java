@@ -3,6 +3,9 @@ public class Process {
 	private int necessaryMemory;
 	private int assignedMemory;
 	private LRU memory;
+	public int id;
+	
+	private static int I = 0;
 	
 	public Process(int necessaryMemory, int assignedMemory) {
 		this.necessaryMemory = necessaryMemory;
@@ -24,22 +27,22 @@ public class Process {
 		int n = 0;
 		
 		for(int i = 0; i < assignedMemory; i++) {
-			if(n >= necessaryMemory) {
-				break;
+			if(!physicalMemory.add(new MemoryPage())) {
+				System.out.println("physicalMemory: Nie mieœci siê w pamiêci: " + n);
 			}
-			
-			physicalMemory.add(new MemoryPage());
 			n++;
 		}
 		
-		MemoryPage.clear();
-		
 		for(int i = 0; i < virtualMemorySize; i++) {
-			virtualMemory.add(new MemoryPage());
+			if(!virtualMemory.add(new MemoryPage())) {
+				System.out.println("virtualMemory: Nie mieœci siê w pamiêci");
+			}
 			n++;
 		}
 		
 		memory = new LRU(physicalMemory, virtualMemory);
+		id = I++;
+		
 	}
 	
 	public boolean receivePage(int id) {
@@ -54,7 +57,37 @@ public class Process {
 			
 			return false;
 		}
+	}
+	
+	public Process increase() {
+		memory.increase();
 		
+		return this;
+	}
+	
+	public Process decrease() {
+		memory.decrease();
 		
+		return this;
+	}
+	
+	public Process increaseMissErrors() {
+		memory.increaseMissErrors();
+		
+		return this;
+	}
+	
+	public Process clear() {
+		memory.clear();
+		
+		return this;
+	}
+	
+	public int getMissErrors() {
+		return memory.missErrors;
+	}
+	
+	public int size() {
+		return memory.physicalMemory.size();
 	}
 }
